@@ -25,8 +25,7 @@ def get_solutions_from_web(problem, university, location):
     #  search using the SMART query instead of the messy user sentence
     search_results = search.run(smart_query)
     
-    print("\n--- NEW RAW DUCKDUCKGO SEARCH RESULTS ---")
-    print(search_results)
+   
     print("-------------------------------------------\n")
     
     # --- The Summarizer ---
