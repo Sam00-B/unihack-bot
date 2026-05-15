@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.tools import DuckDuckGoSearchRun
-
+import time
 load_dotenv()
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
 search = DuckDuckGoSearchRun()
@@ -18,6 +18,7 @@ def get_solutions_from_web(problem, university, location):
     Problem: "{problem}" at {university} in {location} website used for serach will be reddit.
     ONLY reply with the search keywords, absolutely nothing else. No quotes, no intro.
     """
+    time.sleep(3)  # Simulate delay
     smart_query = llm.invoke(query_prompt).content.strip()
     
     #print(f"🔍 DuckDuckGo is now searching for exactly: '{smart_query}'")
@@ -30,6 +31,7 @@ def get_solutions_from_web(problem, university, location):
     
     # --- The Summarizer ---
     #print("🧠 Gemini is reading the new results and thinking of 3 solutions...")
+    time.sleep(3)  # Simulate delay
     prompt = f"""
     You are a helpful student-life assistant for {university}.
 

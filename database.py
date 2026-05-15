@@ -58,14 +58,14 @@ def wipe_database():
     print("\n--- RAW DATABASE RESULTS ---")
     print(search_results['metadatas']) # Just printing the metadata so it's easier to read
     print("----------------------------\n")"""
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     print("=== 2. SAVING A STUDENT HACK ===")
     save_to_library(
         problem_topic="where to get cheap groceries near campus",
         solution_text="you can get cheap groceries from global bazaar",
         author_name="Alex",
         status="pending"
-    )
+    )"""
 
 
 # --- QUICK WIPE SCRIPT ---
