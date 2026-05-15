@@ -11,7 +11,7 @@ def get_solutions_from_web(problem, university, location):
     print(f"\n🗣️ Student asked: '{problem}'")
     
     # ---  The Translator ---
-    print("🧠 Gemini is translating the problem into a smart search query...")
+    #print("🧠 Gemini is translating the problem into a smart search query...")
     query_prompt = f"""
     You are an expert at writing search engine queries. 
     Convert this student's problem into a short, 3-to-5 word keyword search query.
@@ -20,35 +20,67 @@ def get_solutions_from_web(problem, university, location):
     """
     smart_query = llm.invoke(query_prompt).content.strip()
     
-    print(f"🔍 DuckDuckGo is now searching for exactly: '{smart_query}'")
+    #print(f"🔍 DuckDuckGo is now searching for exactly: '{smart_query}'")
     
     #  search using the SMART query instead of the messy user sentence
     search_results = search.run(smart_query)
     
    
-    print("-------------------------------------------\n")
+    #print("-------------------------------------------\n")
     
     # --- The Summarizer ---
-    print("🧠 Gemini is reading the new results and thinking of 3 solutions...")
+    #print("🧠 Gemini is reading the new results and thinking of 3 solutions...")
     prompt = f"""
     You are a helpful student-life assistant for {university}.
-    A student has this problem: "{problem}"
-    
-    Here is raw data scraped from the internet regarding this issue:
-    {search_results}
-    
-    Task: Extract or infer 3 distinct, specific, and actionable solutions or specific places the student can go. 
-    If the scraped data is still vague, use your own general knowledge about {university} and {location} to provide REAL store names (like Walmart, Hy-Vee, Fareway, etc.). 
-    DO NOT give generic advice. Give me actual names and solutions.
-    
-    Format them clearly as Option 1, Option 2, Option 3. Keep them concise.
-    """
+
+                A student has this problem:
+                "{problem}"
+
+                Here is raw data scraped from the internet regarding this issue:
+                {search_results}
+
+                Your task:
+
+                * Provide EXACTLY 3 solutions.
+                * Each solution must be specific, actionable, and realistic.
+                * Prefer REAL place names, businesses, offices, stores, or campus resources whenever possible.
+                * If the scraped data is vague, use your own knowledge about {university} and {location} to infer likely real options.
+                * DO NOT give generic advice.
+                * Keep each option concise (1-3 sentences maximum).
+
+                Negative instructions:
+
+                * Do NOT use markdown formatting.
+                * Do NOT use *, #, -, bullet points, or numbered lists except "Option 1", "Option 2", and "Option 3".
+                * Do NOT add introductions or conclusions.
+                * Do NOT use emojis.
+                * Do NOT use quotation marks unless necessary.
+                * Do NOT output anything outside the required format.
+
+                Required Output Format:
+
+                Option 1:
+                Name: <specific place/resource/store>
+                Why it helps: <short explanation>
+                Location/Access: <short location or access detail>
+
+                Option 2:
+                Name: <specific place/resource/store>
+                Why it helps: <short explanation>
+                Location/Access: <short location or access detail>
+
+                Option 3:
+                Name: <specific place/resource/store>
+                Why it helps: <short explanation>
+                Location/Access: <short location or access detail>
+
+                    """
     
     response = llm.invoke(prompt)
     return response.content
 
 # --- TEST AREA ---
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     my_university = "University of California"
     my_problem = "where to get cheap groceries near campus"
     my_location = "Los Angeles, CA"
@@ -56,4 +88,4 @@ if __name__ == "__main__":
     options = get_solutions_from_web(my_problem, my_university, my_location)
     
     print("\n=== THE FINAL RESULTS ===")
-    print(options)
+    print(options)"""
