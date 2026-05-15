@@ -2,7 +2,7 @@ import database
 import search_test
 from langchain_google_genai import ChatGoogleGenerativeAI
 import time
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+
 def search_answer_from_web(problem,university,location):
     return search_test.get_solutions_from_web(problem,university,location)
 def ask_unihack(problem,university,location):
@@ -47,9 +47,9 @@ def ask_unihack(problem,university,location):
     else:
         print("Found a good solution in the library!")
         print("\n=======================================")
-    print("🎓 UNIHACK OFFICIAL SOLUTION:")
-    print("=======================================")
-    print(main_answer)
+        print("🎓 UNIHACK OFFICIAL SOLUTION:")
+        print("=======================================")
+        print(main_answer)
     if pending_hacks:
         print("\n=======================================")
         print("🧑‍🎓 Hacks provided by students:")
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     loc = "Vermillion, SD"
     
     # Test 1: A question the database already knows about
-    ask_unihack("where to get cheap groceries near campus", uni, loc)
+    #ask_unihack("where to get cheap groceries near campus", uni, loc)
     
     # Test 2: A brand new question it has to search the web for!
-    #ask_unihack("best quiet study spots on campus", uni, loc)
+    ask_unihack("best quiet study spots on campus", uni, loc)

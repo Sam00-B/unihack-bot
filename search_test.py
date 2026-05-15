@@ -4,11 +4,11 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.tools import DuckDuckGoSearchRun
 import time
 load_dotenv()
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite")
 search = DuckDuckGoSearchRun()
 
 def get_solutions_from_web(problem, university, location):
-    print(f"\n🗣️ Student asked: '{problem}'")
+    #print(f"\n🗣️ Student asked: '{problem}'")
     
     # ---  The Translator ---
     #print("🧠 Gemini is translating the problem into a smart search query...")
