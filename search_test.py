@@ -4,10 +4,13 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.tools import DuckDuckGoSearchRun
 import time
 load_dotenv()
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite")
 search = DuckDuckGoSearchRun()
 
-def get_solutions_from_web(problem, university, location):
+def get_solutions_from_web(problem, university, location, rejected_answers=[]):
+    if rejected_answers is None:
+        rejected_answers = []
+
     #print(f"\n🗣️ Student asked: '{problem}'")
     
     # ---  The Translator ---
@@ -75,6 +78,9 @@ def get_solutions_from_web(problem, university, location):
                 Name: <specific place/resource/store>
                 Why it helps: <short explanation>
                 Location/Access: <short location or access detail>
+                IMPORTANT: The student has already rejected the following answers. DO NOT suggest these again:{rejected_answers}.If rejected_answers is empty, ignore that last sentence and provide your best answer based on the search results and your knowledge. If you cannot find any good solutions from the search results, use your knowledge about {university} and {location} to infer likely helpful resources or places.
+
+                Provide a completely new and different solution.
 
                     """
     

@@ -5,7 +5,7 @@ import uuid
 client = chromadb.PersistentClient(path="./local_db")
 collection = client.get_or_create_collection(name="university_knowledge")
 
-def save_to_library(problem_topic, solution_text, author_name, status):
+def save_to_library(problem_topic, solution_text, author_name, status,university, location):
     """Saves ANY solution (AI or Student) into the local database with metadata tags."""
     
     entry_id = str(uuid.uuid4())
@@ -16,13 +16,15 @@ def save_to_library(problem_topic, solution_text, author_name, status):
         metadatas=[{
             "topic": problem_topic, 
             "author": author_name, 
-            "status": status
+            "status": status,
+            "university": university,
+            "location": location
         }],
         ids=[entry_id]
     )
     #print("✅ Saved successfully!\n")
 
-def search_library(query_topic):
+def search_library(query_topic, university, location):
     """Searches the database for the closest matching solutions."""
     
     #print(f"🔍 Searching local library for: '{query_topic}'...")
@@ -30,11 +32,10 @@ def search_library(query_topic):
     # Return the top 3 closest matches this time so we can see multiple types
     results = collection.query(
         query_texts=[query_topic],
-        n_results=3  
-    )
-    
+        n_results=3,
+        where={"$and": [{"university":university} , {"location": location}]} ) 
     return results
-def wipe_database():
+#def wipe_database():
     """Deletes the entire collection to start fresh."""
     print("🧨 Wiping the database clean...")
     client.delete_collection(name="university_knowledge")
