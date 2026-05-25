@@ -1,3 +1,6 @@
+# DEV NOTE: The 'pending' status was originally meant for moderation, 
+# but right now it is exclusively used to identify student-submitted hacks 
+# so we can display them separately from 'ai_generated' or 'verified' solutions.
 import database
 import search_test
 import time
@@ -15,14 +18,18 @@ def ask_unihack(problem,university,location):
     distances=db_results['distances'][0]
     main_answer=None
     pending_hacks=[]
-    for i in range(len(documents)):
-        if distances[i]<2.5:
-            status=metadatas[i]['status']
-            aurthor=metadatas[i]['author']
-            if status in ['ai_generated','verified'] and main_answer is None:
-                main_answer=documents[i]
-            elif status=='pending':
-                pending_hacks.append((aurthor,documents[i]))
+    for max_distance in [1.0, 1.5, 2.0, 2.5]: 
+        for i in range(len(documents)):
+            if distances[i] < max_distance:
+                status=metadatas[i]['status']
+                aurthor=metadatas[i]['author']
+                if status in ['ai_generated','verified'] and main_answer is None:
+                    main_answer=documents[i]
+                elif status=='pending':
+                   if (aurthor, documents[i]) not in pending_hacks:
+                        pending_hacks.append((aurthor, documents[i]))
+        if main_answer or pending_hacks:
+            break
     if main_answer is  None and not pending_hacks :
         print("No good solutions found in the library. Searching the web...")
         attempts = 0
@@ -63,6 +70,7 @@ def ask_unihack(problem,university,location):
                 print("Thank you! Saving your hack to the database...")
             # Save as 'pending' so it shows up in the pending_hacks section for others!
                 database.save_to_library(problem, user_solution, author_name, "pending", university, location)
+        return
     if pending_hacks:
         print("\n=======================================")
         print("🧑‍🎓 Hacks provided by students:")

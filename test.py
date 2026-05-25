@@ -46,10 +46,10 @@ if __name__ == "__main__":
     # ask_unihack("how to get free printing in the library", "Stanford University", "Stanford, CA")
     
     # Test 8
-    # ask_unihack("best professors for intro to psych", "Ohio State University", "Columbus, OH")
+    #ask_unihack("best professors for intro to psych", "Ohio State University", "Columbus, OH")
     
     # Test 9
-    # ask_unihack("quietest place to take a nap", "University of Washington", "Seattle, WA")
+    ask_unihack("quietest place to take a nap", "University of Washington", "Seattle, WA")
 
 
     # ---------------------------------------------------------
@@ -60,4 +60,4 @@ if __name__ == "__main__":
     # ---------------------------------------------------------
 
     # Test 10
-    ask_unihack("secret dorm hacks", "Harvard University", "Cambridge, MA")
+    #ask_unihack("secret dorm hacks", "Harvard University", "Cambridge, MA")
