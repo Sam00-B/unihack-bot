@@ -70,6 +70,6 @@ def wipe_database():
 
 
 # --- QUICK WIPE SCRIPT ---
-'''if __name__ == "__main__":
+if __name__ == "__main__":
     # Uncomment the line below, run python database.py, then comment it out again!
-    wipe_database()'''
+    wipe_database()

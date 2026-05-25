@@ -11,7 +11,7 @@ if __name__ == "__main__":
     # ---------------------------------------------------------
     
     # Test 1
-    #ask_unihack("best late night pizza near campus", "New York University", "New York, NY")
+    ask_unihack("best late night pizza near campus", "New York University", "New York, NY")
     
     # Test 2
     #ask_unihack("where to park for free without a permit", "University of Texas at Austin", "Austin, TX")
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     #ask_unihack("best professors for intro to psych", "Ohio State University", "Columbus, OH")
     
     # Test 9
-    ask_unihack("quietest place to take a nap", "University of Washington", "Seattle, WA")
+    #ask_unihack("quietest place to take a nap", "University of Washington", "Seattle, WA")
 
 
     # ---------------------------------------------------------

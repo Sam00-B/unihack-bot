@@ -17,6 +17,8 @@ def get_solutions_from_web(problem, university, location, rejected_answers=[]):
     # ---  The Translator ---
     #print("🧠 Gemini is translating the problem into a smart search query...")
     try:
+        # 🧪 TEST LINE: Force the rate limit error to happen immediately without calling Gemini
+        #raise ResourceExhausted("Simulating token exhaustion!")
         query_prompt = f"""
         You are an expert at writing search engine queries. 
         Convert this student's problem into a short, 3-to-5 word keyword search query.
