@@ -35,7 +35,7 @@ def search_library(query_topic, university, location):
         n_results=3,
         where={"$and": [{"university":university} , {"location": location}]} ) 
     return results
-#def wipe_database():
+def wipe_database():
     """Deletes the entire collection to start fresh."""
     print("🧨 Wiping the database clean...")
     client.delete_collection(name="university_knowledge")
@@ -70,6 +70,6 @@ def search_library(query_topic, university, location):
 
 
 # --- QUICK WIPE SCRIPT ---
-"""if __name__ == "__main__":
+if __name__ == "__main__":
     # Uncomment the line below, run python database.py, then comment it out again!
-    wipe_database()"""
+    wipe_database()
