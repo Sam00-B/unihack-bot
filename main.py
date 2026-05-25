@@ -39,6 +39,9 @@ def ask_unihack(problem,university,location):
         while attempts < max_attempts:
             time.sleep(3)
             main_answer=search_answer_from_web(problem,university,location,rejected_answers)
+            if main_answer == "ERROR:RATE_LIMIT":
+                print("\n🛑 Out of Juice! UniHack has hit its AI token limit for the moment. Our brain needs a quick breather to reset. Please check back in a little while!")
+                return # This safely exits the entire function immediately
             print(main_answer)
             while True:
                 feedback = input("Did this solution work for you? (yes/no): ").strip().lower()
