@@ -3,9 +3,9 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.tools import DuckDuckGoSearchRun
 import time
-from google.api_core.exceptions import ResourceExhausted
+from langchain_google_genai.chat_models import ChatGoogleGenerativeAIError
 load_dotenv()
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite")
 search = DuckDuckGoSearchRun()
 
 def get_solutions_from_web(problem, university, location, rejected_answers=[]):
@@ -90,8 +90,11 @@ def get_solutions_from_web(problem, university, location, rejected_answers=[]):
         
         response = llm.invoke(prompt)
         return response.content
-    except ResourceExhausted:
-        return "ERROR:RATE_LIMIT"
+    except ChatGoogleGenerativeAIError as e:
+            if "RESOURCE_EXHAUSTED" in str(e):
+                return "ERROR:RATE_LIMIT"
+        # If it's a different Gemini error, re-raise it so you can see it
+            raise e
 
 # --- TEST AREA ---
 """if __name__ == "__main__":

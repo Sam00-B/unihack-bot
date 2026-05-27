@@ -13,23 +13,27 @@ def ask_unihack(problem,university,location):
     print("\n--- DATABASE DIAGNOSTIC ---")
     print(db_results)
     print("---------------------------\n")
-    documents=db_results['documents'][0]
-    metadatas=db_results['metadatas'][0]
-    distances=db_results['distances'][0]
+    if not db_results['documents'] or not db_results['documents'][0]:
+        documents, metadatas, distances = [], [], []
+    else:
+        documents = db_results['documents'][0]
+        metadatas = db_results['metadatas'][0]
+        distances = db_results['distances'][0]
     main_answer=None
     pending_hacks=[]
-    for max_distance in [1.0, 1.5, 2.0, 2.5]: 
-        for i in range(len(documents)):
-            if distances[i] < max_distance:
-                status=metadatas[i]['status']
-                aurthor=metadatas[i]['author']
-                if status in ['ai_generated','verified'] and main_answer is None:
-                    main_answer=documents[i]
-                elif status=='pending':
-                   if (aurthor, documents[i]) not in pending_hacks:
-                        pending_hacks.append((aurthor, documents[i]))
-        if main_answer or pending_hacks:
-            break
+ 
+    for i in range(len(documents)):
+        if distances[i] < 0.4: # This threshold determines what counts as a "close match" from the database
+            status=metadatas[i]['status']
+            author=metadatas[i]['author']
+            solution_text = metadatas[i]['solution']
+            if status in ['ai_generated','verified'] and main_answer is None:
+                main_answer=solution_text
+                
+            elif status=='pending':
+                if (author, solution_text) not in pending_hacks:
+                    pending_hacks.append((author, solution_text))
+    
     if main_answer is  None and not pending_hacks :
         print("No good solutions found in the library. Searching the web...")
         attempts = 0
@@ -78,12 +82,12 @@ def ask_unihack(problem,university,location):
         print("\n=======================================")
         print("🧑‍🎓 Hacks provided by students:")
         print("=======================================")
-        for aurthor, hack in pending_hacks:
-            print(f"👤 {aurthor} says: {hack}\n")
+        for author, hack in pending_hacks:
+            print(f"👤 {author} says: {hack}\n")
             
                 
             
-    else:
+    if main_answer:
         print("Found a good solution in the library!")
         print("\n=======================================")
         print("🎓 UNIHACK OFFICIAL SOLUTION:")

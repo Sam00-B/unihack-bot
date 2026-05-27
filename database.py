@@ -3,7 +3,10 @@ import uuid
 
 # Initialize the Database
 client = chromadb.PersistentClient(path="./local_db")
-collection = client.get_or_create_collection(name="university_knowledge")
+collection = client.get_or_create_collection(
+    name="university_knowledge",
+    metadata={"hnsw:space": "cosine"} # ✨ This forces it to use Cosine math!
+)
 
 def save_to_library(problem_topic, solution_text, author_name, status,university, location):
     """Saves ANY solution (AI or Student) into the local database with metadata tags."""
@@ -12,10 +15,10 @@ def save_to_library(problem_topic, solution_text, author_name, status,university
     #print(f"💾 Saving solution to library (Author: {author_name} | Status: {status})...")
     
     collection.add(
-        documents=[solution_text],
+        documents=[problem_topic],
         metadatas=[{
-            "topic": problem_topic, 
-            "author": author_name, 
+            "solution": solution_text,
+            "author": author_name,
             "status": status,
             "university": university,
             "location": location
@@ -59,17 +62,19 @@ def wipe_database():
     print("\n--- RAW DATABASE RESULTS ---")
     print(search_results['metadatas']) # Just printing the metadata so it's easier to read
     print("----------------------------\n")"""
-"""if __name__ == "__main__":
+if __name__ == "__main__":
     print("=== 2. SAVING A STUDENT HACK ===")
     save_to_library(
-        problem_topic="where to get cheap groceries near campus",
-        solution_text="you can get cheap groceries from global bazaar",
+        problem_topic="where to park for free without a permit",
+        solution_text="sell your car",
         author_name="Alex",
-        status="pending"
-    )"""
+        status="pending",
+        university="University of Texas at Austin",
+        location="Austin, TX"
+    )
 
 
 # --- QUICK WIPE SCRIPT ---
-if __name__ == "__main__":
+'''if __name__ == "__main__":
     # Uncomment the line below, run python database.py, then comment it out again!
-    wipe_database()
+    wipe_database()'''
