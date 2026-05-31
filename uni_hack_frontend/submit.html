@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniHack | Upload Hack</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button class="corner-btn secondary-btn" onclick="window.location.href='index.html'">
+        <span>Back to Search</span>
+    </button>
+
+    <div class="container">
+        <header>
+            <h1 data-text="UniHack">UniHack</h1>
+            <p>Upload a solution to the student mainframe.</p>
+        </header>
+
+        <main>
+            <div class="search-box">
+                <input type="text" id="sub-problem" placeholder="What problem did you solve? (e.g. free parking)" required>
+                <div class="context-inputs">
+                    <input type="text" id="sub-university" placeholder="University Name" required>
+                    <input type="text" id="sub-location" placeholder="City, State" required>
+                </div>
+                <input type="text" id="sub-author" placeholder="Your Name / Handle (Optional)">
+                <textarea id="sub-solution" placeholder="Explain your hack here..." rows="5" required></textarea>
+                <button id="submit-hack-btn"><span>Upload Hack</span></button>
+            </div>
+
+            <div id="sys-message" class="sys-message hidden"></div>
+        </main>
+    </div>
+
+    <script src="submit.js"></script>
+</body>
+</html>

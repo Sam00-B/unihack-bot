@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniHack | Student Knowledge Base</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button id="nav-submit-btn" class="corner-btn secondary-btn" onclick="window.location.href='submit.html'">
+        <span>Submit a Hack</span>
+    </button>
+
+    <div class="container">
+        <header>
+            <h1 data-text="UniHack">UniHack</h1>
+            <p>Real hacks from real students. AI when you need it.</p>
+        </header>
+
+        <main>
+            <div class="search-box">
+                <input type="text" id="problem" placeholder="What do you need help with? (e.g. free parking)" required>
+                <div class="context-inputs">
+                    <input type="text" id="university" placeholder="University Name" required>
+                    <input type="text" id="location" placeholder="City, State" required>
+                </div>
+                <button id="search-btn"><span>Find a Hack</span></button>
+            </div>
+
+            <div id="loading" class="hidden">
+                <p>Scanning the network...</p>
+            </div>
+
+            <div id="results-area" class="hidden">
+                <h2 id="result-title">// Results</h2>
+                <div id="result-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

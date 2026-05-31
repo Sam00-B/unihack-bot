@@ -5,7 +5,7 @@ from langchain_community.tools import DuckDuckGoSearchRun
 import time
 from langchain_google_genai.chat_models import ChatGoogleGenerativeAIError
 load_dotenv()
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite")
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
 search = DuckDuckGoSearchRun()
 
 def get_solutions_from_web(problem, university, location, rejected_answers=[]):
