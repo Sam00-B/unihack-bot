@@ -79,15 +79,37 @@ document.getElementById('search-btn').addEventListener('click', () => {
                 card.appendChild(feedbackDiv);
             };
 
-            if (data.type === "student_hacks") {
-                data.hacks.forEach(hack => {
+            // ✨ NEW HYBRID RENDERING BLOCK ✨
+            if (data.type === "hybrid_solution") {
+                // 1. Render Official AI/Verified solution card if it exists
+                if (data.solution) {
                     const card = document.createElement('div');
-                    card.className = 'result-card student-card';
-                    card.innerText = `${hack.solution}\n\n— Submitted by ${hack.author}`;
-                    appendFeedback(card, hack.solution, data.source);
+                    card.className = 'result-card ai-card';
+                    card.innerText = data.solution;
+                    appendFeedback(card, data.solution, data.source);
                     resultContent.appendChild(card);
-                });
+                }
+                
+                // 2. Render Student hacks below it if any exist
+                if (data.hacks && data.hacks.length > 0) {
+                    // Add a terminal-style subtitle divider for student entries
+                    const hackHeader = document.createElement('div');
+                    hackHeader.style.margin = "1.5rem 0 0.5rem 0";
+                    hackHeader.style.color = "var(--primary)";
+                    hackHeader.style.fontFamily = "'Share Tech Mono', monospace";
+                    hackHeader.innerText = "// Community Mainframe Submissions:";
+                    resultContent.appendChild(hackHeader);
+
+                    data.hacks.forEach(hack => {
+                        const card = document.createElement('div');
+                        card.className = 'result-card student-card';
+                        card.innerText = `${hack.solution}\n\n— Submitted by ${hack.author}`;
+                        appendFeedback(card, hack.solution, data.source);
+                        resultContent.appendChild(card);
+                    });
+                }
             } else {
+                // Fallback for normal web searches, errors, or exhausted attempts
                 const card = document.createElement('div');
                 card.className = 'result-card ai-card';
                 card.innerText = data.solution;

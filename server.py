@@ -52,7 +52,7 @@ def ask_unihack_api(req: QueryRequest):
         pending_hacks = []
      
         for i in range(len(documents)):
-            if distances[i] < 0.4:
+            if distances[i] < database.MATCH_THRESHOLD:  
                 status = metadatas[i]['status']
                 author = metadatas[i]['author']
                 solution_text = metadatas[i]['solution']
@@ -63,11 +63,14 @@ def ask_unihack_api(req: QueryRequest):
                     if {"author": author, "solution": solution_text} not in pending_hacks:
                         pending_hacks.append({"author": author, "solution": solution_text})
         
-        if pending_hacks:
-            return {"type": "student_hacks", "hacks": pending_hacks, "source": "db"}
-            
-        if main_answer:
-            return {"type": "ai_solution", "solution": main_answer, "source": "db"}
+        # ✨ NEW: If we found EITHER an official solution OR student hacks, return them together!
+        if main_answer or pending_hacks:
+            return {
+                "type": "hybrid_solution",
+                "solution": main_answer,  # Can be a string, or None if missing
+                "hacks": pending_hacks,    # Can be a list, or [] if empty
+                "source": "db"
+            }
             
     # 2. Stop trying if we hit 3 rejected answers
     if len(req.rejected_answers) >= 3:
@@ -84,9 +87,7 @@ def ask_unihack_api(req: QueryRequest):
     if web_answer == "ERROR:RATE_LIMIT":
         return {"type": "ai_solution", "solution": "🛑 Out of Juice! UniHack has hit its AI token limit for the moment. Please check back in a little while!", "source": "error"}
     
-    # Notice we DO NOT save to the database here! We wait for the user to click Yes.
     return {"type": "ai_solution", "solution": web_answer, "source": "web"}
-
 
 @app.post("/save_answer")
 def save_answer_api(req: SaveAnswerRequest):

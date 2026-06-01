@@ -95,6 +95,6 @@ def ask_unihack(problem,university,location):
         print(main_answer)
     
 
-'''if __name__ == "__main__":
+if __name__ == "__main__":
     # Test 3
-    ask_unihack("easiest elective classes to boost GPA", "University of South Dakota", "Vermillion, SD")'''
+    ask_unihack("eduroam wifi is not connecting", "University of South Dakota", "Vermillion, SD")

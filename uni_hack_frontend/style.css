@@ -463,3 +463,19 @@ textarea:focus {
     color: #ff4f4f;
     border-color: #ff4f4f;
 }
+/* ── FOOTER CALL TO ACTION ── */
+.footer-cta {
+    margin-top: 3.5rem;
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px dashed var(--card-border);
+    animation: card-in 0.5s ease both;
+}
+
+.footer-cta p {
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.05em;
+}
