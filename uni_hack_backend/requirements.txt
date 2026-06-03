@@ -6,4 +6,4 @@ langchain-google-genai
 langchain-community
 duckduckgo-search
 python-dotenv
-sentence-transformers
+onnxruntime
