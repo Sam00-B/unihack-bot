@@ -1,3 +1,6 @@
+// Toggle these depending on where you are testing!
+const BACKEND_URL = "https://your-backend-name.onrender.com"; // We will put your real Render URL here later
+// const BACKEND_URL = "http://127.0.0.1:8000";
 document.getElementById('search-btn').addEventListener('click', () => {
     const problem = document.getElementById('problem').value.trim();
     const university = document.getElementById('university').value.trim();
@@ -21,7 +24,7 @@ document.getElementById('search-btn').addEventListener('click', () => {
         resultContent.innerHTML = '';
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/ask', {
+            const response = await fetch('${BACKEND_URL}/ask', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -62,7 +65,7 @@ document.getElementById('search-btn').addEventListener('click', () => {
                     feedbackDiv.querySelector('span').innerText = "Great! Saving for future students...";
                     
                     // Tell backend to save it to the DB!
-                    await fetch('http://127.0.0.1:8000/save_answer', {
+                    await fetch('${BACKEND_URL}/save_answer', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ problem, university, location, solution: solutionText })

@@ -1,3 +1,5 @@
+const BACKEND_URL = "https://your-backend-name.onrender.com"; 
+// const BACKEND_URL = "http://127.0.0.1:8000";
 document.getElementById('submit-hack-btn').addEventListener('click', async () => {
     const problem = document.getElementById('sub-problem').value.trim();
     const university = document.getElementById('sub-university').value.trim();
@@ -22,7 +24,7 @@ document.getElementById('submit-hack-btn').addEventListener('click', async () =>
     sysMsg.style.borderLeftColor = "var(--primary)";
     
     try {
-        const response = await fetch('http://127.0.0.1:8000/submit', {
+        const response = await fetch('${BACKEND_URL}/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
