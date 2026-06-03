@@ -1,5 +1,5 @@
 // Toggle these depending on where you are testing!
-const BACKEND_URL = "https://your-backend-name.onrender.com"; // We will put your real Render URL here later
+const BACKEND_URL = "https://unihack-api.onrender.com"; // We will put your real Render URL here later
 // const BACKEND_URL = "http://127.0.0.1:8000";
 document.getElementById('search-btn').addEventListener('click', () => {
     const problem = document.getElementById('problem').value.trim();
