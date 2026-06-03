@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://unihack-api.onrender.com"; 
+const BACKEND_URL = "https://unihack-bot.onrender.com"; 
 // const BACKEND_URL = "http://127.0.0.1:8000";
 document.getElementById('submit-hack-btn').addEventListener('click', async () => {
     const problem = document.getElementById('sub-problem').value.trim();
