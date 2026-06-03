@@ -88,6 +88,9 @@ def ask_unihack_api(req: QueryRequest):
         return {"type": "ai_solution", "solution": "🛑 Out of Juice! UniHack has hit its AI token limit for the moment. Please check back in a little while!", "source": "error"}
     
     return {"type": "ai_solution", "solution": web_answer, "source": "web"}
+@app.get("/")
+def read_root():
+    return {"message": "UniHack API is live and running! 🚀"}
 
 @app.post("/save_answer")
 def save_answer_api(req: SaveAnswerRequest):
