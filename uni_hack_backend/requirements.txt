@@ -8,4 +8,4 @@ duckduckgo-search
 python-dotenv
 onnxruntime
 tokenizers
-duckduckgo-search
+ddgs
