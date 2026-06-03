@@ -24,7 +24,7 @@ document.getElementById('submit-hack-btn').addEventListener('click', async () =>
     sysMsg.style.borderLeftColor = "var(--primary)";
     
     try {
-        const response = await fetch(`${BACKEND_URL}/submit`, {
+        const response = await fetch(BACKEND_URL + '/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

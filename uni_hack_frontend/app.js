@@ -24,7 +24,7 @@ document.getElementById('search-btn').addEventListener('click', () => {
         resultContent.innerHTML = '';
 
         try {
-            const response = await fetch(`${BACKEND_URL}/ask`, {
+            const response = await fetch(BACKEND_URL + '/ask', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -65,7 +65,7 @@ document.getElementById('search-btn').addEventListener('click', () => {
                     feedbackDiv.querySelector('span').innerText = "Great! Saving for future students...";
                     
                     // Tell backend to save it to the DB!
-                    await fetch(`${BACKEND_URL}/save_answer`, {
+                    await fetch(BACKEND_URL + '/save_answer', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ problem, university, location, solution: solutionText })
