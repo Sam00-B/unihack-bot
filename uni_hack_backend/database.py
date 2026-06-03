@@ -5,13 +5,9 @@ from chromadb.utils import embedding_functions
 # Initialize the Database
 client = chromadb.PersistentClient(path="./local_db")
 
-# Swap the default embedding model for one trained on Q&A / problem matching.
-# "multi-qa-mpnet-base-dot-v1" understands that "not connecting" and
-# "disconnecting" are different problems, unlike the default all-MiniLM-L6-v2
-# which only cares about topic similarity.
 
 embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-    model_name="multi-qa-mpnet-base-dot-v1"
+    model_name="all-MiniLM-L6-v2"
 )
 
 collection = client.get_or_create_collection(
