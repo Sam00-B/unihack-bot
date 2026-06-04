@@ -43,19 +43,24 @@ document.getElementById('search-btn').addEventListener('click', () => {
 
             // Helper to add the Yes/No buttons
             const appendFeedback = (card, solutionText, source) => {
-                // If it came from the DB, it's already verified, no need to ask
-                if (source === 'db' || source === 'exhausted' || source === 'error') return;
+                // Skip feedback for exhausted or error states only
+                if (source === 'exhausted' || source === 'error') return;
+
+                const isFromDB = (source === 'db');
 
                 const feedbackDiv = document.createElement('div');
                 feedbackDiv.className = 'feedback-container';
+
+                // DB results: ask if it was relevant (catches wrong-problem matches)
+                // Web results: ask if it worked
                 feedbackDiv.innerHTML = `
-                    <span>Did this solution work for you?</span>
+                    <span>${isFromDB ? 'Was this relevant to your problem?' : 'Did this solution work for you?'}</span>
                     <button class="feedback-btn btn-yes">Yes</button>
                     <button class="feedback-btn btn-no">No</button>
                 `;
-                
+
                 const btnYes = feedbackDiv.querySelector('.btn-yes');
-                const btnNo = feedbackDiv.querySelector('.btn-no');
+                const btnNo  = feedbackDiv.querySelector('.btn-no');
 
                 btnYes.addEventListener('click', async () => {
                     btnYes.classList.add('active-yes');
@@ -63,20 +68,58 @@ document.getElementById('search-btn').addEventListener('click', () => {
                     btnYes.innerText = "Saved!";
                     btnNo.style.display = "none";
                     feedbackDiv.querySelector('span').innerText = "Great! Saving for future students...";
-                    
-                    // Tell backend to save it to the DB!
-                    await fetch(BACKEND_URL + '/save_answer', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ problem, university, location, solution: solutionText })
-                    });
+
+                    // Only save to DB if it came from web (DB results are already saved)
+                    if (!isFromDB) {
+                        await fetch(BACKEND_URL + '/save_answer', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ problem, university, location, solution: solutionText })
+                        });
+                    }
                 });
 
                 btnNo.addEventListener('click', () => {
-                    // Add this bad answer to our list
-                    rejectedAnswers.push(solutionText);
-                    // Search again!
-                    fetchAnswer(); 
+                    // Show "Why?" options
+                    feedbackDiv.innerHTML = `
+                        <span>Why wasn't it helpful?</span>
+                        <button class="feedback-btn btn-reason" data-reason="different_solution">1. The solution is different</button>
+                        <button class="feedback-btn btn-reason" data-reason="different_problem">2. Answer to a different problem</button>
+                    `;
+
+                    feedbackDiv.querySelectorAll('.btn-reason').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const reason = btn.dataset.reason;
+
+                            // Only report to block system if result came from DB
+                            // (web answers aren't stored in Pinecone so nothing to block)
+                            if (isFromDB) {
+                                fetch(BACKEND_URL + '/report_feedback', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        query: problem,
+                                        result_problem: solutionText,
+                                        university: university,
+                                        location: location,
+                                        reason: reason
+                                    })
+                                });
+                            }
+
+                            // Add to rejected list so it won't show again this session
+                            rejectedAnswers.push(solutionText);
+
+                            if (reason === 'different_problem') {
+                                feedbackDiv.innerHTML = `<span style="color: var(--primary);">// Reported. Searching again...</span>`;
+                            } else {
+                                feedbackDiv.innerHTML = `<span style="color: var(--primary);">// Noted. Finding a better solution...</span>`;
+                            }
+
+                            // Search DB again first, web as fallback (handled by backend)
+                            setTimeout(() => fetchAnswer(), 1200);
+                        });
+                    });
                 });
 
                 card.appendChild(feedbackDiv);

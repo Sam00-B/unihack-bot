@@ -109,3 +109,14 @@ def submit_hack_api(req: SubmitRequest):
     except Exception as e:
         print(f"Database Error: {e}")
         raise HTTPException(status_code=500, detail="Failed to save to database.")
+@app.post("/report_feedback")
+async def report_feedback_endpoint(data: dict):
+    database.report_feedback(
+        query          = data["query"],
+        result_problem = data["result_problem"],
+        university     = data["university"],
+        location       = data["location"],
+        user_id        = data.get("user_id", "anonymous"),
+        reason         = data["reason"]
+    )
+    return {"status": "ok"}
