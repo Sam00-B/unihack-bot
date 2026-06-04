@@ -9,3 +9,5 @@ python-dotenv
 onnxruntime
 tokenizers
 ddgs
+pinecone-client
+sentence-transformers

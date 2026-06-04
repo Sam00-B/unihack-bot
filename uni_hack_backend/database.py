@@ -1,68 +1,90 @@
-import chromadb
+import os
 import uuid
-import chromadb.utils.embedding_functions as embedding_functions
+from pinecone import Pinecone
+from sentence_transformers import SentenceTransformer
 
-# Initialize the Database
-client = chromadb.PersistentClient(path="./local_db")
+PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
 
+if not PINECONE_API_KEY:
+    raise ValueError("PINECONE_API_KEY is not set in environment variables. Please add it to your .env file.")
 
-embedding_fn = embedding_functions.DefaultEmbeddingFunction()
+pc = Pinecone(api_key=PINECONE_API_KEY)
+index = pc.Index("university-knowledge")
 
-collection = client.get_or_create_collection(
-    name="university_knowledge",
-    embedding_function=embedding_fn,
-    metadata={"hnsw:space": "cosine"}
-)
+# 2. Initialize a local embedding model (Outputs 384-dimensional vectors to match your old Chroma setup)
+model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# Distance threshold — how similar a stored problem must be to return a result.
-# Lower = stricter. multi-qa-mpnet is more precise so we can tighten this
-# compared to the old model (was 0.55).
+# Kept exactly at 0.35 to preserve your precision configuration
 MATCH_THRESHOLD = 0.35
-
 
 def normalize(text: str) -> str:
     """Normalizes text: lowercases, strips, and collapses all whitespace."""
     return " ".join(text.lower().split())
 
-
 def save_to_library(problem_topic, solution_text, author_name, status, university, location):
-    """Saves ANY solution (AI or Student) into the local database with metadata tags."""
-
+    """Saves ANY solution into the permanent cloud Pinecone database."""
     entry_id = str(uuid.uuid4())
 
-    collection.add(
-        documents=[problem_topic],
-        metadatas=[{
-            "solution": solution_text,
-            "author":   author_name,
-            "status":   status,
-            "university": normalize(university),
-            "location":   normalize(location)
-        }],
-        ids=[entry_id]
-    )
+    # Generate the math vector array for the problem topic
+    vector = model.encode(problem_topic).tolist()
 
+    # Pinecone inserts documents as a tuple: (ID, Vector, Metadata)
+    index.upsert(
+        vectors=[
+            (
+                entry_id, 
+                vector, 
+                {
+                    "problem": problem_topic, 
+                    "solution": solution_text,
+                    "author":   author_name,
+                    "status":   status,
+                    "university": normalize(university),
+                    "location":   normalize(location)
+                }
+            )
+        ]
+    )
+    print(f"Successfully saved hack {entry_id} to Pinecone Cloud!")
 
 def search_library(query_topic, university, location):
-    """Searches the database for the closest matching solutions."""
+    """Searches the cloud database for the closest matching solutions using Metadata filtering."""
+    
+    # Convert incoming search string into a matching 384-dim vector
+    query_vector = model.encode(query_topic).tolist()
 
-    results = collection.query(
-        query_texts=[query_topic],
-        n_results=3,
-        where={"$and": [
-            {"university": normalize(university)},
-            {"location":   normalize(location)}
-        ]}
+    # Query the Pinecone Index
+    response = index.query(
+        vector=query_vector,
+        top_k=3,
+        include_metadata=True,
+        filter={
+            "university": {"$eq": normalize(university)},
+            "location": {"$eq": normalize(location)}
+        }
     )
-    return results
 
+    # RECONSTRUCT DATA: Format the dictionary to look exactly like ChromaDB's output
+    db_results = {"documents": [[]], "metadatas": [[]], "distances": [[]]}
+    
+    for match in response.get('matches', []):
+        # Convert Pinecone's Similarity Score into Cosine Distance
+        distance = 1.0 - match['score']
+        
+        db_results["documents"][0].append(match['metadata']['problem'])
+        db_results["metadatas"][0].append(match['metadata'])
+        db_results["distances"][0].append(distance)
 
-def wipe_database():
-    """Deletes the entire collection to start fresh."""
-    print("Wiping the database clean...")
-    client.delete_collection(name="university_knowledge")
-    print("Database is now completely empty!")
+    return db_results
 
+'''def wipe_database():
+    """Deletes all vectors within the index namespace to start fresh."""
+    print("Wiping the cloud database clean...")
+    try:
+        index.delete(delete_all=True)
+        print("Cloud database is now completely empty!")
+    except Exception as e:
+        print(f"Index is already empty or wipe failed: {e}")
 
 if __name__ == "__main__":
-    wipe_database()
+    pass'''
