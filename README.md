@@ -126,7 +126,7 @@ unihack/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/unihack.git
+git clone https://github.com/Sam00-B/unihack-bot.git
 cd unihack
 ```
 
