@@ -479,3 +479,13 @@ textarea:focus {
     margin-bottom: 1.25rem;
     letter-spacing: 0.05em;
 }
+/* ── LOCATION HINT ── */
+.location-hint {
+    display: block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+    line-height: 1.5;
+    margin-top: -0.25rem;
+}
