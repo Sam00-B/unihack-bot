@@ -6,8 +6,6 @@ langchain-google-genai
 langchain-community
 duckduckgo-search
 python-dotenv
-onnxruntime
-tokenizers
 ddgs
 pinecone
 fastembed
