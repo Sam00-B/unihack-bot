@@ -10,4 +10,4 @@ onnxruntime
 tokenizers
 ddgs
 pinecone
-sentence-transformers
+fastembed
