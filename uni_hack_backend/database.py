@@ -1,20 +1,20 @@
 import os
 import uuid
 from pinecone import Pinecone
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 
+# 1. Initialize Pinecone Cloud Client
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
-
 if not PINECONE_API_KEY:
-    raise ValueError("PINECONE_API_KEY is not set in environment variables. Please add it to your .env file.")
+    raise ValueError("PINECONE_API_KEY not found in environment variables. Please set it before running the server.")
 
 pc = Pinecone(api_key=PINECONE_API_KEY)
 index = pc.Index("university-knowledge")
 
-# 2. Initialize a local embedding model (Outputs 384-dimensional vectors to match your old Chroma setup)
-model = SentenceTransformer('all-MiniLM-L6-v2')
+# 2. Initialize ultra-lightweight LOCAL embedding model
 
-# Kept exactly at 0.35 to preserve your precision configuration
+model = TextEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
+
 MATCH_THRESHOLD = 0.35
 
 def normalize(text: str) -> str:
@@ -25,8 +25,8 @@ def save_to_library(problem_topic, solution_text, author_name, status, universit
     """Saves ANY solution into the permanent cloud Pinecone database."""
     entry_id = str(uuid.uuid4())
 
-    # Generate the math vector array for the problem topic
-    vector = model.encode(problem_topic).tolist()
+    # Generate the local vector using fastembed (Outputs a generator, so we convert to a list)
+    vector = list(model.embed([problem_topic]))[0].tolist()
 
     # Pinecone inserts documents as a tuple: (ID, Vector, Metadata)
     index.upsert(
@@ -48,10 +48,10 @@ def save_to_library(problem_topic, solution_text, author_name, status, universit
     print(f"Successfully saved hack {entry_id} to Pinecone Cloud!")
 
 def search_library(query_topic, university, location):
-    """Searches the cloud database for the closest matching solutions using Metadata filtering."""
+    """Searches the cloud database for the closest matching solutions."""
     
-    # Convert incoming search string into a matching 384-dim vector
-    query_vector = model.encode(query_topic).tolist()
+    # Generate the local vector for the search query
+    query_vector = list(model.embed([query_topic]))[0].tolist()
 
     # Query the Pinecone Index
     response = index.query(
@@ -64,7 +64,7 @@ def search_library(query_topic, university, location):
         }
     )
 
-    # RECONSTRUCT DATA: Format the dictionary to look exactly like ChromaDB's output
+    # RECONSTRUCT DATA format for server.py
     db_results = {"documents": [[]], "metadatas": [[]], "distances": [[]]}
     
     for match in response.get('matches', []):
@@ -78,7 +78,6 @@ def search_library(query_topic, university, location):
     return db_results
 
 '''def wipe_database():
-    """Deletes all vectors within the index namespace to start fresh."""
     print("Wiping the cloud database clean...")
     try:
         index.delete(delete_all=True)
