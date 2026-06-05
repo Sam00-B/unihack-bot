@@ -1,6 +1,7 @@
 # UniHack — Student Knowledge Base
 
 > Real hacks from real students. AI when you need it.
+> Live Demo: https://unihack-frontend.onrender.com/
 
 UniHack is a community-powered search tool that helps university students find solutions to campus problems. It first searches a crowd-sourced database of student-submitted hacks, and falls back to AI-powered web search when nothing is found locally.
 
