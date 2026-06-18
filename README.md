@@ -577,8 +577,7 @@ The frontend is plain HTML/CSS/JS — host the `uni_hack_frontend/` folder anywh
 
 ### Note on SQLite in production
 
-`feedback_blocks.db` is a local file. On Render's free tier, the filesystem resets on each deploy, so feedback block data does not persist between deploys. This is a known limitation — a future improvement would be migrating the block system to a hosted database (PostgreSQL, PlanetScale, etc.) or storing blocks in Pinecone metadata.
-
+`feedback_blocks.db` is a local file. On Render's free tier, the filesystem resets on each deploy, so feedback block data does not persist between deploys. This is a known limitation.
 ---
 
 ## License
