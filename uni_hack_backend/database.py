@@ -15,7 +15,7 @@ index = pc.Index("university-knowledge")
 
 model = TextEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
-MATCH_THRESHOLD = 0.35
+MATCH_THRESHOLD = 0.6
 
 def normalize(text: str) -> str:
     """Normalizes text: lowercases, strips, and collapses all whitespace."""
