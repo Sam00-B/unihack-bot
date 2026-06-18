@@ -1,8 +1,11 @@
+<img width="1918" height="1013" alt="Screenshot 2026-06-04 181730" src="https://github.com/user-attachments/assets/a7418124-ba62-42ec-97ea-f664d2b23a21" />
+<img width="1918" height="1025" alt="Screenshot 2026-06-04 182328" src="https://github.com/user-attachments/assets/0e592bf7-abb8-40e9-a21a-e30c6d448131" />
+<img width="1897" height="1022" alt="Screenshot 2026-06-04 183612" src="https://github.com/user-attachments/assets/dc2c2b29-ee22-4503-90bf-f9916f1eea8e" />
+<img width="1919" height="1012" alt="Screenshot 2026-06-04 183657" src="https://github.com/user-attachments/assets/ceb1d1ed-48c3-493a-b15c-b90cf20356c0" />
 
-<img width="1897" height="1022" alt="Screenshot 2026-06-04 183612" src="https://github.com/user-attachments/assets/8cbc9df0-6977-4186-9356-c2f425d352a9" />
-<img width="1918" height="1025" alt="Screenshot 2026-06-04 182328" src="https://github.com/user-attachments/assets/263b86bb-70d3-4cdc-ae36-4eece567832a" />
-<img width="1918" height="1013" alt="Screenshot 2026-06-04 181730" src="https://github.com/user-attachments/assets/ba7e7851-da73-4434-a563-2a013eaa358a" />
-<img width="1919" height="1012" alt="Screenshot 2026-06-04 183657" src="https://github.com/user-attachments/assets/69a388ee-38e4-46a3-945f-06006c232586" />
+
+
+
 # UniHack — Student Knowledge Base
 
 > Real hacks from real students. AI when you need it.
