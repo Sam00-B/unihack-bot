@@ -1,10 +1,16 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from pydantic import BaseModel
 import database
 import search_test
 
 app = FastAPI()
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,7 +40,8 @@ class SaveAnswerRequest(BaseModel): # NEW: Used when a student clicks "Yes"
     solution: str
 
 @app.post("/ask")
-def ask_unihack_api(req: QueryRequest):
+@limiter.limit("10/minute")  # Rate limit to prevent abuse
+def ask_unihack_api(request: Request, req: QueryRequest):
     print(f"Incoming search: '{req.problem}'. Rejected count: {len(req.rejected_answers)}")
     
     # 1. ONLY search the database if this is our first try (no rejected answers yet)
@@ -89,11 +96,13 @@ def ask_unihack_api(req: QueryRequest):
     
     return {"type": "ai_solution", "solution": web_answer, "source": "web"}
 @app.get("/")
-def read_root():
+@limiter.limit("60/minute")
+def read_root(request: Request):
     return {"message": "UniHack API is live and running! 🚀"}
 
 @app.post("/save_answer")
-def save_answer_api(req: SaveAnswerRequest):
+@limiter.limit("5/minute")
+def save_answer_api(request: Request, req: SaveAnswerRequest):
     # This triggers when the user clicks "Yes"
     print("User clicked Yes! Saving verified answer to database...")
     database.save_to_library(req.problem, req.solution, "UniHack AI", "verified", req.university, req.location)
@@ -101,7 +110,8 @@ def save_answer_api(req: SaveAnswerRequest):
 
 
 @app.post("/submit")
-def submit_hack_api(req: SubmitRequest):
+@limiter.limit("5/minute")
+def submit_hack_api(request: Request, req: SubmitRequest):
     print(f"New hack submitted by {req.author} for {req.problem}")
     try:
         database.save_to_library(req.problem, req.solution, req.author, "pending", req.university, req.location)
@@ -110,7 +120,8 @@ def submit_hack_api(req: SubmitRequest):
         print(f"Database Error: {e}")
         raise HTTPException(status_code=500, detail="Failed to save to database.")
 @app.post("/report_feedback")
-async def report_feedback_endpoint(data: dict):
+@limiter.limit("5/minute")
+async def report_feedback_endpoint(request: Request, data: dict):
     database.report_feedback(
         query          = data["query"],
         result_problem = data["result_problem"],
