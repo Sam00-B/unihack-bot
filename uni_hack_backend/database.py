@@ -2,6 +2,9 @@ import os
 import uuid
 from pinecone import Pinecone
 from fastembed import TextEmbedding
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # 1. Initialize Pinecone Cloud Client
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
